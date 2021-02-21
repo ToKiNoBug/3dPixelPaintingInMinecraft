@@ -12,7 +12,7 @@ https://www.bilibili.com/video/BV1Ci4y1E7oU
 如果想要了解立体地图画的原理也可以仔细阅读一下简介，或者去看一看mcwiki的“地图物品格式”条目——这是我最重要的参考资料<br>
 
 
-#先介绍一下几个我常用的术语：
+#先介绍一下几个我常用的术语：<br>
 1.地图：特指游戏中可以记录地形的物品，不是存档。<br>
 2.地图文件：存储地图内容的文件，它们在\saves\存档名称\data\下面，文件名都是map_i.dat。其中i是大于等于0的整数，也就是地图的id。<br>
 3.地图色Color：地图文件中存储的数据，每个地图色取值都在0-255，占用一个Byte。地图色是minecraft根据方块id和方块位置计算出来的。<br>
@@ -27,8 +27,8 @@ https://www.bilibili.com/video/BV1Ci4y1E7oU
 9.CBL：自定义的方块列表。<br>
 <br>
 <br>
-#v1.0：第一个可以凑活着用的版本
-##使用方法：
+#v1.0：第一个可以凑活着用的版本<br>
+##使用方法：<br>
 1.使用第三方的地图画生成器（如mc-map.djfun.de）生成出地图文件map_i.dat。<br>
 2.然后用winrar或者其他解压软件直接将它解压（地图文件是gzip压缩的），得到map_i这样一个没用后缀名的文件。<br>
 3.启动ReadUnpacked.exe，输入map_i（也就是解压后的文件名），它会提取出Base.txt和Depth.txt，分别是地图的基色矩阵和阴影矩阵。<br>
@@ -42,7 +42,7 @@ https://www.bilibili.com/video/BV1Ci4y1E7oU
 11.打开matlab，进入存档，使用/reload命令，再使用/function命令调用刚刚生成的函数。<br>
 <br>
 <br>
-#包含的文件：
+#包含的文件：<br>
 1.ReadUnpacked：一个c艹的应用程序，它的用途是提取解压后的地图文件。地图文件都是gzip压缩的，我非常菜搞不懂gzip，所以要先使用winrar或者bandzip手动解压地图文件，得到的文件应该是去掉了.dat后缀的map_i文件。使用ReadUnpacked.exe处理这个文件，得到2个txt，它们就是进行下一步所需的参数。<br>
 2.EzExport：方便你生成地图画的函数。它调用了GetHeight.m和MapExport.m这两个函数。<br>
 3.GetHeight：将Depth矩阵表示的相对高度转换为Height矩阵的绝对高度，并将水专门列出，特殊处理。<br>
