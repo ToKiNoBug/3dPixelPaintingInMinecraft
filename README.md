@@ -11,9 +11,6 @@
 https://www.bilibili.com/video/BV1Ci4y1E7oU
 如果想要了解立体地图画的原理也可以仔细阅读一下简介，或者去看一看mcwiki的“地图物品格式”条目——这是我最重要的参考资料
 
-简略的使用方法：
-是先去生成map文件；然后再用ReadUnpacked.exe生成4个txt文件；然后在matlab导入这四个文件；然后生成一个mcfunction文件；然后在mc用/function指令运行。
-
 
 先介绍一下几个我常用的术语：
 地图：特指游戏中可以记录地形的物品，不是存档。
@@ -29,7 +26,25 @@ NWPos：导出地图的时候需要确定地图的坐标，NWPos是一个1×3的
 Path：一个字符串，它是导出的mcfuntion的地址。
 CBL：自定义的方块列表。
 
-v1.0：第一个可以凑活着用的版本。它包含以下部分：
-ReadUnpacked：一个c艹的应用程序，它的用途是提取解压后的地图文件。地图文件都是gzip压缩的，我非常菜搞不懂gzip，所以要先使用winrar或者bandzip手动解压地图文件，得到的文件应该是去掉了.dat后缀的map_i文件。使用ReadUnpacked.exe处理这个文件，得到4个txt，它们就是进行下一步所需的参数。
+v1.0：第一个可以凑活着用的版本
+使用方法：
+1.使用第三方的地图画生成器（如mc-map.djfun.de）生成出地图文件map_i.dat。
+2.然后用winrar或者其他解压软件直接将它解压（地图文件是gzip压缩的），得到map_i这样一个没用后缀名的文件。
+3.启动ReadUnpacked.exe，输入map_i（也就是解压后的文件名），它会提取出Base.txt和Depth.txt，分别是地图的基色矩阵和阴影矩阵。
+4.打开matlab，将所有matlab函数移动到\matlab\bin文件夹下（也可以自己创建一个子文件夹），确保这些函数已经被matlab添加到路径中。后面的操作都在matlab中进行。
+5.分别复制两个txt的全部内容，粘贴在matlab的命令行窗口中，按enter执行。这样就导入了两个128×128的矩阵，分别为Base和Depth。
+6.输入你要生成的mcfuntion的路径，比如：Path='D:\游戏\Minecraft\test.mcfunction'。最好将它存成一个字符串或者字符向量。
+7.选好导出所用的Mode（其实是方块列表），输入Mode="Survival_Better"按回车。模式的值可以是"Custom"（传统，适于创造模式）"Survival_Cheaper"（适于生存前期，比较便宜）"Survival_Better"（适于生存后期）"InstBreak"（尽量选择可瞬间破坏的方块）和"Replace"（替换一部分传统方块列表）。不建议使用"Replace"，它还不太完善。我最推荐使用"Survival_Better"。
+8.设定地图画的西北角坐标。如果你不了解地图网格，那就输入Pos=[-64,5,-64]。注意坐标的顺序是xyz，Pos应当是行向量。
+9.调用EzExport函数。输入EzExport(Base,Depth,Path,Mode,Pos,0)并等待一小会。如果返回一个大于等于16512的数字，说明mcfunction生成成功了。这个数字就是mcfuntion包含的命令数。
+10.关闭matlab，将生成的mcfunction移动到存档的数据包中。
+11.打开matlab，进入存档，使用/reload命令，再使用/function命令调用刚刚生成的函数。
 
-还没写完
+1.ReadUnpacked：一个c艹的应用程序，它的用途是提取解压后的地图文件。地图文件都是gzip压缩的，我非常菜搞不懂gzip，所以要先使用winrar或者bandzip手动解压地图文件，得到的文件应该是去掉了.dat后缀的map_i文件。使用ReadUnpacked.exe处理这个文件，得到2个txt，它们就是进行下一步所需的参数。
+2.EzExport：方便你生成地图画的函数。它调用了GetHeight.m和MapExport.m这两个函数。
+3.GetHeight：将Depth矩阵表示的相对高度转换为Height矩阵的绝对高度，并将水专门列出，特殊处理。
+4.MapExport：最终生成mcfuntion的函数。它内置了几种方块列表可供选择。
+5.DrawMap：预览将要生成的地图画。
+6.MLGHelp：一个提供帮助用的函数。还不是太完善但也可以凑合用。
+
+
