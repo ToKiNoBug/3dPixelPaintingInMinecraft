@@ -1,0 +1,123 @@
+function [Map,RGB,HSV,Lab,CMY,XYZ] = LoadColors(BasePath)
+%[Map,RGB,HSV,Lab,CMY,XYZ] = LoadColors(BasePath)
+%Map
+Path=strcat(BasePath,'\Map.Toki');
+fid=fopen(Path,'rb');
+if(~fid)
+    error(strcat('没有找到文件',Path));
+end
+Type=fread(fid,[1,3],'char');
+Type=char(Type);
+if(~strcmp(Type,'Map'))
+    error(strcat('文件',Path,'格式损坏'));
+end
+L=fread(fid,1,'uint16');
+Sizer=fread(fid,[1,3],'uint8');%Sizer=[rC,cC,sizeof]
+if(Sizer(1)*Sizer(2)*Sizer(3)~=L)
+    error(strcat('文件',Path,'格式损坏'));
+end
+Map=fread(fid,[Sizer(1),Sizer(2)],'uint8');
+fclose(fid);
+
+%RGB
+Path=strcat(BasePath,'\RGB.Toki');
+fid=fopen(Path,'rb');
+if(~fid)
+    error(strcat('没有找到文件',Path));
+end
+Type=fread(fid,[1,3],'char');
+Type=char(Type);
+if(~strcmp(Type,'RGB'))
+    error(strcat('文件',Path,'格式损坏'));
+end
+L=fread(fid,1,'uint16');
+Sizer=fread(fid,[1,3],'uint8');%Sizer=[rC,cC,sizeof]
+if(Sizer(1)*Sizer(2)*Sizer(3)~=L)
+    error(strcat('文件',Path,'格式损坏'));
+end
+RGB=fread(fid,[Sizer(1),Sizer(2)],'double');
+fclose(fid);
+fclose(fid);
+
+%HSV
+Path=strcat(BasePath,'\HSV.Toki');
+fid=fopen(Path,'rb');
+if(~fid)
+    error(strcat('没有找到文件',Path));
+end
+Type=fread(fid,[1,3],'char');
+Type=char(Type);
+if(~strcmp(Type,'HSV'))
+    error(strcat('文件',Path,'格式损坏'));
+end
+L=fread(fid,1,'uint16');
+Sizer=fread(fid,[1,3],'uint8');%Sizer=[rC,cC,sizeof]
+if(Sizer(1)*Sizer(2)*Sizer(3)~=L)
+    error(strcat('文件',Path,'格式损坏'));
+end
+HSV=fread(fid,[Sizer(1),Sizer(2)],'double');
+fclose(fid);
+fclose(fid);
+
+
+%Lab
+Path=strcat(BasePath,'\Lab.Toki');
+fid=fopen(Path,'rb');
+if(~fid)
+    error(strcat('没有找到文件',Path));
+end
+Type=fread(fid,[1,3],'char');
+Type=char(Type);
+if(~strcmp(Type,'Lab'))
+    error(strcat('文件',Path,'格式损坏'));
+end
+L=fread(fid,1,'uint16');
+Sizer=fread(fid,[1,3],'uint8');%Sizer=[rC,cC,sizeof]
+if(Sizer(1)*Sizer(2)*Sizer(3)~=L)
+    error(strcat('文件',Path,'格式损坏'));
+end
+Lab=fread(fid,[Sizer(1),Sizer(2)],'double');
+fclose(fid);
+fclose(fid);
+
+%CMY
+Path=strcat(BasePath,'\CMY.Toki');
+fid=fopen(Path,'rb');
+if(~fid)
+    error(strcat('没有找到文件',Path));
+end
+Type=fread(fid,[1,3],'char');
+Type=char(Type);
+if(~strcmp(Type,'CMY'))
+    error(strcat('文件',Path,'格式损坏'));
+end
+L=fread(fid,1,'uint16');
+Sizer=fread(fid,[1,3],'uint8');%Sizer=[rC,cC,sizeof]
+if(Sizer(1)*Sizer(2)*Sizer(3)~=L)
+    error(strcat('文件',Path,'格式损坏'));
+end
+CMY=fread(fid,[Sizer(1),Sizer(2)],'double');
+fclose(fid);
+fclose(fid);
+
+%XYZ
+Path=strcat(BasePath,'\XYZ.Toki');
+fid=fopen(Path,'rb');
+if(~fid)
+    error(strcat('没有找到文件',Path));
+end
+Type=fread(fid,[1,3],'char');
+Type=char(Type);
+if(~strcmp(Type,'XYZ'))
+    error(strcat('文件',Path,'格式损坏'));
+end
+L=fread(fid,1,'uint16');
+Sizer=fread(fid,[1,3],'uint8');%Sizer=[rC,cC,sizeof]
+if(Sizer(1)*Sizer(2)*Sizer(3)~=L)
+    error(strcat('文件',Path,'格式损坏'));
+end
+XYZ=fread(fid,[Sizer(1),Sizer(2)],'double');
+fclose(fid);
+fclose(fid);
+end
+
