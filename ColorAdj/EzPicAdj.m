@@ -1,4 +1,4 @@
-function [PicMap] = EzPicAdj(Pic,ColorMode,isSurvival,is16,isFlat,RGB,HSV,Map,XYZ,Lab,CMY)
+function [PicMap] = EzPicAdj(Pic,ColorMode,isSurvival,is16,isFlat,MIndexCustom,RGB,HSV,Map,XYZ,Lab)
 MIndex15=repmat([true(51,1);false(7,1)],4,1);
 CIndex15=repmat(MIndex15,1,3);
 MIndexS=[true(174,1);false(58,1)];
@@ -8,8 +8,8 @@ MIndexF(128)=true;
 MIndexF(70)=false;
 CIndexF=repmat(MIndexF,1,3);
 
-MIndex=true(232,1);
-CIndex=true(232,3);
+MIndex=repmat(MIndexCustom,4,1);
+CIndex=repmat(MIndexCustom,4,3);
 
 if isSurvival
     MIndex=MIndex&MIndexS;
@@ -31,7 +31,6 @@ Map(~MIndex)=nan;
 RGB(~CIndex)=nan;
 HSV(~CIndex)=nan;
 Lab(~CIndex)=nan;
-CMY(~CIndex)=nan;
 XYZ(~CIndex)=nan;
 
 % Map=reshape(Map(MIndex),[L,1]);
@@ -58,11 +57,6 @@ if(strcmp(ColorMode,'XYZ'))
 end
 if(strcmp(ColorMode,'Lab'))
     PicMap=PicAdjEuc(rgb2lab(Pic),Lab,Map);
-    %     ShowPicMap(PicMap,RGB);
-    return;
-end
-if(strcmp(ColorMode,'CMY'))
-    PicMap=PicAdjEuc(rgb2cmy(Pic),CMY,Map);
     %     ShowPicMap(PicMap,RGB);
     return;
 end
