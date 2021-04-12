@@ -22,7 +22,7 @@ function varargout = Test0(varargin)
 
 % Edit the above text to modify the response to help Test0
 
-% Last Modified by GUIDE v2.5 23-Feb-2021 10:58:21
+% Last Modified by GUIDE v2.5 10-Mar-2021 15:14:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -43,7 +43,7 @@ else
 end
 % End initialization code - DO NOT EDIT
 % image(rand(128,128,3));
-axis off
+
 
 
 % --- Executes just before Test0 is made visible.
@@ -54,10 +54,12 @@ function Test0_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to Test0 (see VARARGIN)
 handles.FeedBack.String="Loading...";
+axis off
 [handles.RGB,handles.HSV,handles.Lab,handles.CMY,handles.XYZ,handles.Map]=GetColors();
 handles.ColorMode='Lab';
 handles.isSurvival=true;
 handles.is16=true;
+handles.isFlat=false;
 handles.RawPic=zeros(128,128,3);
 handles.MapPic=uint8(zeros(128,128));
 % Choose default command line output for Test0
@@ -74,7 +76,7 @@ guidata(hObject, handles);
 
 
 % UIWAIT makes Test0 wait for user response (see UIRESUME)
-% uiwait(handles.Test);
+% uiwait(handles.SlopeFig);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -307,8 +309,8 @@ guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
-function Test_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Test (see GCBO)
+function SlopeFig_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to SlopeFig (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 % set(handles.Logo,'CDATA',imread('Title.png'));
@@ -329,7 +331,7 @@ if(~handles.isImported)
 end
 % is16=handles.isGameVersion16.Value;
 
-handles.PicMap=EzPicAdj(handles.RawPic,handles.ColorMode,handles.isSurvival,handles.is16,handles.RGB,handles.HSV,handles.Map,handles.XYZ,handles.Lab,handles.CMY);
+handles.PicMap=EzPicAdj(handles.RawPic,handles.ColorMode,handles.isSurvival,handles.is16,handles.isFlat,handles.RGB,handles.HSV,handles.Map,handles.XYZ,handles.Lab,handles.CMY);
 
 handles.AdjedPic=ShowPicMap(handles.PicMap,handles.RGB);
 image(handles.AdjedPic);
@@ -359,6 +361,7 @@ end
 hObject.String="Loading...";
 image(handles.RawPic);
 hObject.String="显示原图";
+axis off
 guidata(hObject, handles);
 
 
@@ -377,6 +380,7 @@ end
 hObject.String="Loading...";
 image(handles.AdjedPic);
 hObject.String="显示调整后图像";
+axis off
 guidata(hObject, handles);
 
 
@@ -477,8 +481,8 @@ if(~handles.isAdjusted)
     return;
 end
 
-if(size(handles.PicMap,1)~=128||size(handles.PicMap,2)~=128)
-    handles.FeedBack.String="图片尺寸不是128×128，暂不支持";
+if mod(size(handles.PicMap,1),128)~=0||mod(size(handles.PicMap,2),128)~=0
+    handles.FeedBack.String="图片长宽尺寸不是128的整数倍，暂不支持";
     hObject.String="生成立体地图画";
     handles.isGenerated=false;
     guidata(hObject, handles);
@@ -502,17 +506,23 @@ handles.NWPos(3)=round(str2double(handles.NWZ.String));
 if(handles.NWPos(2)<0)
     handles.FeedBack.String="你输入的Y坐标小于0，它最好不小于5";
     hObject.String="生成立体地图画";
-    handles.NWY.String="y";
+    handles.NWY.String="5";
     handles.isGenerated=false;
     guidata(hObject, handles);
     return;
 end
 handles.FeedBack.String="生成中……请稍候";
-handles.Base=floor(handles.PicMap)/4;
+handles.Base=floor(handles.PicMap*0.25);
 % disp(handles.Base(handles.Base>58));
-Depth=mod(handles.PicMap,4);
+Depth=round(mod(handles.PicMap,4));
 % disp(handles.Depth);
 [handles.Height,handles.WaterList]=MakeHeight(handles.Base,Depth);
+
+if handles.isFlat
+   handles.Height=round(handles.Height*0);
+   handles.WaterList(3:4,:)=round(handles.WaterList(3:4,:)*0);
+end
+
 % disp(handles.Height);
 handles.isGenerated=true;
 hObject.String="生成立体地图画";
@@ -537,9 +547,10 @@ if(~File)
     hObject.String="导出mcfunction";
     return;
 end
-Count = MapExport(handles.Base,handles.Height,handles.WaterList,handles.NWPos,strcat(Path,File),handles.BlockListMode,0);
+Count = NewMapExport(handles.Base,handles.Height,handles.WaterList,handles.NWPos,strcat(Path,File),handles.BlockListMode,struct());
 handles.FeedBack.String=strcat("导出成功：共",num2str(Count),"条命令");
 hObject.String="导出mcfunction";
+guidata(hObject, handles);
 
 % --- If Enable == 'on', executes on mouse press in 5 pixel border.
 % --- Otherwise, executes on mouse press in 5 pixel border or over FeedBack.
@@ -550,3 +561,16 @@ function FeedBack_Callback(hObject, eventdata, handles)
 hObject.String="";
 
 guidata(hObject, handles);
+
+
+% --- Executes on button press in isMapFlat.
+function isMapFlat_Callback(hObject, eventdata, handles)
+% hObject    handle to isMapFlat (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.isFlat=hObject.Value;
+% disp(handles.isFlat)
+% Update handles structure
+guidata(hObject, handles);
+% hObject.Value=handles.isFlat;
+% Hint: get(hObject,'Value') returns toggle state of isMapFlat

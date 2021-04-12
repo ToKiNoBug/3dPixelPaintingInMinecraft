@@ -24,7 +24,7 @@ for c=1:cC
                 case 1
                     WaterList(4,waterWrite)=WaterList(3,waterWrite)-4;
                 case 0
-                    WaterList(4,waterWrite)=WaterList(3,waterWrite)-6;
+                    WaterList(4,waterWrite)=WaterList(3,waterWrite)-9;
             end
             waterWrite=waterWrite+1;
         else

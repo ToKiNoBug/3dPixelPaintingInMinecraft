@@ -1,7 +1,7 @@
 function [PicMap] = PicAdjEuc(PicT,TList,MapList)
 u=size(PicT);
 % L=u(1)*u(2);
-PicMap=uint8(zeros(u(1),u(2)));
+PicMap=zeros(u(1),u(2));
 % unFits=zeros(u(1),u(2));
 % Pic1=reshape(PicT(:,:,1),[1,u]);
 % Pic2=reshape(PicT(:,:,2),[1,u]);
@@ -14,5 +14,6 @@ for r=1:u(1)
    end
 end
 % unFits=mean(mean(unFits));
+PicMap=round(PicMap);
 end
 
