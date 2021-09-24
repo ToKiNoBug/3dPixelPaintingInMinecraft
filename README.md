@@ -1,3 +1,11 @@
+注意：本仓库是立体地图画的上一代版本，因为开发环境等原因已经被关闭，不再更新。
+
+关于地图画生成器，请访问[SlopeCraft](https://github.com/ToKiNoBug/SlopeCraft). 
+
+Notice: This repo is an earlier generation of 3d map pixel art generator. This repo will be archived and never updated.
+
+About 3d map pixel art generator, see [SlopeCraft](https://github.com/ToKiNoBug/SlopeCraft). 
+
 # 3dPixelPaintingInMinecraft<br>
 在minecraft中生成3d的地图画<br>
 <br>
